@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TITAN Shield | Automated Security Governor</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background-color: #050505;
+            color: #e5e5e5;
+            font-family: 'Courier New', monospace;
+        }
+
+        .accent {
+            color: #00ff41;
+        }
+
+        .danger {
+            color: #ff0055;
+        }
+
+        .terminal {
+            background: #000;
+            border: 1px solid #333;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: monospace;
+        }
+
+        .blink {
+            animation: blinker 1s linear infinite;
+        }
+
+        @keyframes blinker {
+            50% {
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+
+<body class="min-h-screen flex flex-col items-center justify-center p-4">
+
+    <!-- HERO SECTION -->
+    <header class="max-w-4xl w-full text-center mb-12">
+        <h1 class="text-4xl md:text-6xl font-bold mb-4 tracking-tighter">TITAN <span class="accent">SHIELD</span></h1>
+        <p class="text-xl text-gray-400">Your Codebase is Leaking. We Fix It.</p>
+    </header>
+
+    <!-- TERMINAL DEMO -->
+    <div class="max-w-4xl w-full terminal mb-12 shadow-2xl shadow-green-900/10">
+        <div class="flex items-center gap-2 mb-4 border-b border-gray-800 pb-2">
+            <div class="w-3 h-3 rounded-full bg-red-500"></div>
+            <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+            <div class="w-3 h-3 rounded-full bg-green-500"></div>
+            <span class="text-xs text-gray-500 ml-2">sentinel_agent --scan</span>
+        </div>
+        <div class="text-sm">
+            <p class="text-gray-400">$ sentinel scan --target ./repo --history</p>
+            <p class="mt-2 text-blue-400">[SCANNING] Analyzing last 100 commits...</p>
+            <p class="text-blue-400">[SCANNING] Checking .env.examples...</p>
+            <p class="text-danger mt-2">🔴 CRITICAL ALERT: Supabase Service Key found (commit 4ea2)</p>
+            <p class="text-danger">🔴 CRITICAL ALERT: PayPal Secret found (src/config.js)</p>
+            <p class="mt-2 text-green-400">✅ SOLUTION: Rotating keys via API...</p>
+            <p class="text-green-400">✅ SOLUTION: Rewriting Git History (BFG)...</p>
+            <p class="text-green-400">✅ SOLUTION: Installing Pre-commit Hook...</p>
+            <p class="mt-4"><span class="accent">>> SECURE STATE RESTORED.</span> <span class="blink">_</span></p>
+        </div>
+    </div>
+
+    <!-- PRICING GRID -->
+    <div class="grid md:grid-cols-2 gap-8 max-w-4xl w-full mb-16">
+        <!-- TIER 1 -->
+        <div class="border border-gray-800 p-8 rounded-lg hover:border-green-500 transition-colors bg-gray-900/30">
+            <h2 class="text-2xl font-bold mb-2">FLASH AUDIT</h2>
+            <div class="text-4xl font-bold mb-4 accent">$99</div>
+            <ul class="space-y-2 mb-8 text-sm text-gray-400">
+                <li>✓ Full Repo Deep Scan</li>
+                <li>✓ Git History Cleaning Script</li>
+                <li>✓ Secret Rotation Guide</li>
+                <li>✓ "TITAN Secured" Badge</li>
+            </ul>
+            <a href="mailto:security@titan.one?subject=Flash Audit Request"
+                class="block w-full py-3 bg-gray-800 hover:bg-gray-700 text-center rounded text-white font-bold transition">GET
+                AUDIT</a>
+        </div>
+
+        <!-- TIER 2 -->
+        <div class="border border-green-900 p-8 rounded-lg bg-green-900/10 relative overflow-hidden">
+            <div class="absolute top-0 right-0 bg-accent text-black text-xs font-bold px-2 py-1">POPULAR</div>
+            <h2 class="text-2xl font-bold mb-2">THE GOVERNOR</h2>
+            <div class="text-4xl font-bold mb-4 accent">$499<span class="text-sm text-gray-500">/mo</span></div>
+            <ul class="space-y-2 mb-8 text-sm text-gray-300">
+                <li>✓ Automated CI/CD Key Governor</li>
+                <li>✓ Instant Key Deactivation</li>
+                <li>✓ Weekly Executive Reports</li>
+                <li>✓ 24/7 Sentinel Monitoring</li>
+            </ul>
+            <a href="mailto:sales@titan.one?subject=Governor License"
+                class="block w-full py-3 bg-accent hover:bg-green-400 text-black text-center rounded font-bold transition">DEPLOY
+                GOVERNOR</a>
+        </div>
+    </div>
+
+    <!-- SOCIAL PROOF -->
+    <div class="text-center text-gray-500 text-sm max-w-2xl">
+        <p>"TITAN Shield fixed a critical breach in our trading engine in 4 hours. It's not a tool, it's a digital
+            immune system."</p>
+        <p class="mt-2 text-gray-400 font-bold">- OMEGA, Abyssal Architect</p>
+    </div>
+
+</body>
+
+</html>
