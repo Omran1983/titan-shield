@@ -319,7 +319,7 @@
                 </div>
 
                 <script>
-                    async function startFlashAudit() {
+                    async function startFlashAudit(authToken = null) {
                         const input = document.getElementById('repo-url').value.trim();
                         // Extract owner/repo from URL
                         let repoPath = "";
@@ -340,17 +340,26 @@
                             return alert("Invalid GitHub URL. Please use format: github.com/owner/repo");
                         }
 
-                        // UI Switch
+                        // UI Switch (Hide Token Input if retrying)
+                        const tokenUi = document.getElementById('token-ui');
+                        if (tokenUi) tokenUi.classList.add('hidden');
+
                         document.getElementById('scan-ui').classList.add('hidden');
+                        document.getElementById('results-state').classList.add('hidden'); // Reset results
                         document.getElementById('scanning-state').classList.remove('hidden');
                         document.getElementById('scan-log').innerText = `Targeting: ${repoPath}...`;
 
                         try {
                             // REAL API CALL
-                            const response = await fetch(`https://api.github.com/repos/${repoPath}/contents`);
+                            const headers = {};
+                            if (authToken) {
+                                headers['Authorization'] = `token ${authToken}`;
+                            }
+
+                            const response = await fetch(`https://api.github.com/repos/${repoPath}/contents`, { headers });
 
                             if (response.status === 404 || response.status === 403) {
-                                showPrivateShield();
+                                showPrivateShield(repoPath); // Pass repoPath for retry
                                 return;
                             }
                             if (!response.ok) {
@@ -424,7 +433,7 @@
                         alert(`Scan Failed: ${msg}`);
                     }
 
-                    function showPrivateShield() {
+                    function showPrivateShield(repoPath) {
                         document.getElementById('scanning-state').classList.add('hidden');
                         document.getElementById('results-state').classList.remove('hidden');
 
@@ -438,26 +447,60 @@
                         icon.className = "w-16 h-16 bg-blue-500/20 rounded-full flex items-center justify-center mx-auto mb-4 border border-blue-500/50";
                         title.innerText = "ACCESS DENIED (PRIVATE)";
                         title.className = "text-blue-400 font-bold text-lg mb-2";
-                        desc.innerHTML = "We cannot scan this repo remotely.<br><strong>This is good.</strong> Your code is hidden.";
+                        // desc.innerHTML = "We cannot scan this repo remotely.<br><strong>This is good.</strong> Your code is hidden.";
+                        desc.innerHTML = `
+                            This repo is Private. To proceed with the <strong>Free Flash Audit</strong>, 
+                            you must authorize temporary read-access.
+                        `;
 
                         // Hide Risk List
                         if (riskList) riskList.classList.add('hidden');
 
-                        // Add Pitch for Local Tool
-                        let salesPitch = document.getElementById('sales-pitch');
-                        if (!salesPitch) {
-                            salesPitch = document.createElement('div');
-                            salesPitch.id = 'sales-pitch';
-                            salesPitch.className = "text-center bg-blue-900/10 border border-blue-500/20 rounded p-4 mb-4 text-xs text-blue-200 mt-4";
-                            desc.after(salesPitch);
-                        }
-                        salesPitch.innerHTML = `
-                            To audit private code <strong>without sharing keys</strong>, you must run TITAN locally.
-                            <br><br>
-                            👉 <strong>Download TITAN CLI</strong> ($9.99)<br>
-                            <em>Runs on your machine. Zero data egress.</em>
+                        // Clean up old Pitch
+                        const oldPitch = document.getElementById('sales-pitch');
+                        if (oldPitch) oldPitch.remove();
+                        const oldTokenUi = document.getElementById('token-ui');
+                        if (oldTokenUi) oldTokenUi.remove();
+
+                        // Create Token Input UI
+                        const tokenUi = document.createElement('div');
+                        tokenUi.id = 'token-ui';
+                        tokenUi.className = "mt-4 max-w-xs mx-auto";
+                        tokenUi.innerHTML = `
+                            <div class="bg-gray-800/50 p-4 rounded-lg border border-gray-700">
+                                <label class="block text-xs font-bold text-gray-400 mb-2">GITHUB PAT (READ-ONLY)</label>
+                                <input type="password" id="gh-token" placeholder="ghp_................" 
+                                    class="w-full bg-black border border-gray-600 rounded px-3 py-2 text-white text-xs mb-3 focus:border-green-500 outline-none">
+                                <button onclick="retryWithToken()" class="w-full btn-primary py-2 rounded text-xs font-bold text-white">Unlock & Scan</button>
+                                <p class="text-[10px] text-gray-500 mt-2 text-left leading-tight">
+                                    Token is used client-side only. Not stored. Not logged.<br>
+                                    <a href="#" class="underline hover:text-white">How to create a Read-Only PAT?</a>
+                                </p>
+                            </div>
                         `;
-                        salesPitch.classList.remove('hidden');
+                        desc.after(tokenUi);
+
+
+                        // Add Pitch for Local Tool (Secondary Option)
+                        const salesPitch = document.createElement('div');
+                        salesPitch.id = 'sales-pitch';
+                        salesPitch.className = "text-center mt-6 pt-4 border-t border-gray-800";
+                        salesPitch.innerHTML = `
+                             <p class="text-xs text-gray-400 mb-2">Can't share a token?</p>
+                             <div class="bg-blue-900/10 border border-blue-500/20 rounded p-4 text-xs text-blue-200">
+                                To audit private code <strong>without sharing keys</strong>, you must run TITAN locally.
+                                <br><br>
+                                👉 <strong>Download TITAN CLI</strong> ($9.99)<br>
+                                <em>Runs on your machine. Zero data egress.</em>
+                            </div>
+                        `;
+                        tokenUi.after(salesPitch);
+                    }
+
+                    function retryWithToken() {
+                        const token = document.getElementById('gh-token').value.trim();
+                        if (!token) return alert("Please enter a GitHub Token to proceed.");
+                        startFlashAudit(token);
                     }
                 </script>
             </div>
