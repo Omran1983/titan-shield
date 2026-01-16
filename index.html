@@ -306,28 +306,105 @@
                 </div>
 
                 <script>
-                    function startFlashAudit() {
-                        const url = document.getElementById('repo-url').value;
-                        if (!url) return alert("Please enter a URL (e.g., github.com/user/demo)");
+                    async function startFlashAudit() {
+                        const input = document.getElementById('repo-url').value.trim();
+                        // Extract owner/repo from URL
+                        let repoPath = "";
+                        try {
+                            if (input.includes('github.com')) {
+                                const urlObj = new URL(input.startsWith('http') ? input : `https://${input}`);
+                                const parts = urlObj.pathname.split('/').filter(p => p);
+                                repoPath = `${parts[0]}/${parts[1]}`;
+                            } else {
+                                const parts = input.split('/');
+                                if (parts.length === 2) repoPath = input;
+                            }
+                        } catch (e) {
+                            console.error(e);
+                        }
 
-                        // Switch to Scanning
+                        if (!repoPath || repoPath.includes('undefined')) {
+                            return alert("Invalid GitHub URL. Please use format: github.com/owner/repo");
+                        }
+
+                        // UI Switch
                         document.getElementById('scan-ui').classList.add('hidden');
                         document.getElementById('scanning-state').classList.remove('hidden');
+                        document.getElementById('scan-log').innerText = `Targeting: ${repoPath}...`;
 
-                        const logs = ["Cloning repo...", "Parsing Git History...", "Entropy Scan: 45 files...", "⚠️ MATCH FOUND: .env", "⚠️ MATCH FOUND: AWS_KEY"];
-                        let i = 0;
+                        try {
+                            // REAL API CALL
+                            const response = await fetch(`https://api.github.com/repos/${repoPath}/contents`);
 
-                        const interval = setInterval(() => {
-                            if (i < logs.length) {
-                                document.getElementById('scan-log').innerText = logs[i];
-                                i++;
-                            } else {
-                                clearInterval(interval);
-                                // Show Results
-                                document.getElementById('scanning-state').classList.add('hidden');
-                                document.getElementById('results-state').classList.remove('hidden');
+                            if (!response.ok) {
+                                throw new Error(response.status === 404 ? "Repository not found or Private." : "GitHub API Error.");
                             }
-                        }, 800);
+
+                            const files = await response.json();
+                            analyzeFiles(files);
+
+                        } catch (error) {
+                            showError(error.message);
+                        }
+                    }
+
+                    function analyzeFiles(files) {
+                        const riskyPatterns = ['.env', 'config.js', 'credentials', 'secret', 'key', '.pem', 'id_rsa'];
+                        const foundRisks = [];
+
+                        files.forEach(file => {
+                            riskyPatterns.forEach(pattern => {
+                                if (file.name.toLowerCase().includes(pattern)) {
+                                    foundRisks.push(file.name);
+                                }
+                            });
+                        });
+
+                        showResults(foundRisks);
+                    }
+
+                    function showResults(risks) {
+                        document.getElementById('scanning-state').classList.add('hidden');
+                        document.getElementById('results-state').classList.remove('hidden');
+
+                        const title = document.querySelector('#results-state h3');
+                        const desc = document.querySelector('#results-state p:nth-of-type(1)');
+                        const icon = document.querySelector('#results-state div');
+
+                        // Clean existing list if any
+                        const oldList = document.getElementById('risk-list');
+                        if (oldList) oldList.remove();
+
+                        // Create List Element
+                        const riskList = document.createElement('div');
+                        riskList.id = 'risk-list';
+                        riskList.className = "hidden text-left bg-red-900/10 border border-red-500/20 rounded p-3 mb-4 text-xs font-mono text-red-300";
+                        desc.after(riskList);
+
+                        if (risks.length > 0) {
+                            // Leaks Found
+                            icon.innerHTML = '<span class="text-2xl">⚠️</span>';
+                            icon.className = "w-16 h-16 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-4";
+                            title.innerText = `${risks.length} POTENTIAL LEAKS`;
+                            desc.innerText = "Exposed files detected in root directory:";
+
+                            riskList.innerHTML = risks.map(r => `<div>• ${r}</div>`).join('');
+                            riskList.classList.remove('hidden');
+                        } else {
+                            // Clean (Root)
+                            icon.innerHTML = '<span class="text-2xl">✅</span>';
+                            icon.className = "w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-4";
+                            title.innerText = "ROOT DIR CLEAN";
+                            title.className = "text-green-400 font-bold text-lg mb-2";
+                            desc.innerText = "No obvious secrets in root. Deep history scan recommended.";
+                            riskList.classList.add('hidden');
+                        }
+                    }
+
+                    function showError(msg) {
+                        document.getElementById('scanning-state').classList.add('hidden');
+                        document.getElementById('scan-ui').classList.remove('hidden');
+                        alert(`Scan Failed: ${msg}`);
                     }
                 </script>
             </div>
