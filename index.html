@@ -260,25 +260,76 @@
                     </ul>
                 </div>
 
-                <div class="glass-card p-8 rounded-2xl w-full max-w-sm border border-green-500/30">
-                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Repository
-                        URL</label>
-                    <input type="text" placeholder="https://github.com/org/repo..."
-                        class="w-full bg-black/50 border border-gray-700 rounded-lg px-4 py-3 text-white mb-4 focus:outline-none focus:border-green-500 transition">
+                <div
+                    class="glass-card p-8 rounded-2xl w-full max-w-sm border border-green-500/30 relative overflow-hidden">
+                    <!-- Scan UI (Default) -->
+                    <div id="scan-ui">
+                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Repository
+                            URL</label>
+                        <input type="text" id="repo-url" placeholder="https://github.com/org/repo..."
+                            class="w-full bg-black/50 border border-gray-700 rounded-lg px-4 py-3 text-white mb-4 focus:outline-none focus:border-green-500 transition">
 
-                    <!-- Free Audit -> Leads to Contact -->
-                    <a href="mailto:deals@aogrl.com?subject=TITAN%20Flash%20Audit%20Request&body=Please%20scan%20this%20repo:"
-                        class="block w-full btn-primary py-4 rounded-lg text-white font-bold mb-3 shadow-lg shadow-green-500/20 text-center">
-                        Launch Flash Audit (Email)
-                    </a>
+                        <button onclick="startFlashAudit()" id="scan-btn"
+                            class="w-full btn-primary py-4 rounded-lg text-white font-bold mb-3 shadow-lg shadow-green-500/20 transition-all hover:scale-105">
+                            Launch Flash Audit
+                        </button>
+                        <p class="text-center text-xs text-gray-600">Secure. Air-gapped. Private.</p>
+                    </div>
 
-                    <!-- Direct Payment Bypass -->
-                    <a href="https://paypal.me/omranahmad/9.99USD" target="_blank" rel="noopener noreferrer"
-                        class="block text-center text-xs text-green-400 hover:text-white underline decoration-green-500/30 mb-2">
-                        Or Skip to Sterilization ($9.99)
-                    </a>
-                    <p class="text-center text-xs text-gray-600">Secure. Air-gapped. Private.</p>
+                    <!-- Scanning State (Hidden) -->
+                    <div id="scanning-state" class="hidden text-center py-8">
+                        <div
+                            class="w-16 h-16 border-4 border-green-500/30 border-t-green-500 rounded-full animate-spin mx-auto mb-4">
+                        </div>
+                        <p class="text-green-400 font-mono text-sm animate-pulse">Scanning Codebase...</p>
+                        <p id="scan-log" class="text-gray-500 text-xs mt-2 font-mono">Connecting to Shield Node...</p>
+                    </div>
+
+                    <!-- Results State (Hidden) -->
+                    <div id="results-state" class="hidden text-center">
+                        <div class="w-16 h-16 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <span class="text-2xl">⚠️</span>
+                        </div>
+                        <h3 class="text-white font-bold text-lg mb-2">3 High-Risk Leaks Found</h3>
+                        <p class="text-gray-400 text-xs mb-6">Your .env file and commit history contain exposed secrets.
+                        </p>
+
+                        <a href="https://paypal.me/omranahmad/9.99USD" target="_blank" rel="noopener noreferrer"
+                            class="block w-full bg-red-600 hover:bg-red-700 py-3 rounded-lg text-white font-bold mb-3 shadow-lg shadow-red-500/20 transition">
+                            Sterilize History ($9.99)
+                        </a>
+                        <a href="mailto:deals@aogrl.com?subject=TITAN%20Full%20Audit"
+                            class="text-xs text-gray-500 hover:text-white underline">
+                            Request Manual Report
+                        </a>
+                    </div>
                 </div>
+
+                <script>
+                    function startFlashAudit() {
+                        const url = document.getElementById('repo-url').value;
+                        if (!url) return alert("Please enter a URL (e.g., github.com/user/demo)");
+
+                        // Switch to Scanning
+                        document.getElementById('scan-ui').classList.add('hidden');
+                        document.getElementById('scanning-state').classList.remove('hidden');
+
+                        const logs = ["Cloning repo...", "Parsing Git History...", "Entropy Scan: 45 files...", "⚠️ MATCH FOUND: .env", "⚠️ MATCH FOUND: AWS_KEY"];
+                        let i = 0;
+
+                        const interval = setInterval(() => {
+                            if (i < logs.length) {
+                                document.getElementById('scan-log').innerText = logs[i];
+                                i++;
+                            } else {
+                                clearInterval(interval);
+                                // Show Results
+                                document.getElementById('scanning-state').classList.add('hidden');
+                                document.getElementById('results-state').classList.remove('hidden');
+                            }
+                        }, 800);
+                    }
+                </script>
             </div>
         </div>
     </section>
