@@ -471,11 +471,20 @@
                                 <label class="block text-xs font-bold text-gray-400 mb-2">GITHUB PAT (READ-ONLY)</label>
                                 <input type="password" id="gh-token" placeholder="ghp_................" 
                                     class="w-full bg-black border border-gray-600 rounded px-3 py-2 text-white text-xs mb-3 focus:border-green-500 outline-none">
-                                <button onclick="retryWithToken()" class="w-full btn-primary py-2 rounded text-xs font-bold text-white">Unlock & Scan</button>
-                                <p class="text-[10px] text-gray-500 mt-2 text-left leading-tight">
-                                    Token is used client-side only. Not stored. Not logged.<br>
-                                    <a href="#" class="underline hover:text-white">How to create a Read-Only PAT?</a>
-                                </p>
+                                <button onclick="retryWithToken()" class="w-full btn-primary py-2 rounded text-xs font-bold text-white mb-3">Unlock & Scan</button>
+                                
+                                <div class="text-[10px] text-gray-500 text-left leading-tight border-t border-gray-700 pt-2">
+                                    <strong class="text-gray-400">How to get a Token?</strong>
+                                    <ol class="list-decimal pl-4 mt-2 space-y-1 text-gray-400">
+                                        <li><a href="https://github.com/settings/tokens/new?scopes=repo&description=TITAN%20Flash%20Audit" target="_blank" class="text-green-400 hover:text-white underline font-bold">Click here to Auto-Generate</a></li>
+                                        <li>Scroll to bottom & click <strong>Generate token</strong>.</li>
+                                        <li>Copy the code starting with <code>ghp_</code>.</li>
+                                        <li>Paste it above.</li>
+                                    </ol>
+                                    <div class="mt-2 text-[9px] text-gray-600">
+                                        *Token is verified locally. We do NOT store it.
+                                    </div>
+                                </div>
                             </div>
                         `;
                         desc.after(tokenUi);
