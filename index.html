@@ -4,112 +4,385 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TITAN Shield | Automated Security Governor</title>
+    <title>TITAN SHIELD | The Codebase Governor</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body {
-            background-color: #050505;
-            color: #e5e5e5;
-            font-family: 'Courier New', monospace;
+            font-family: 'Inter', sans-serif;
+            background-color: #030712;
+            color: #fff;
+            overflow-x: hidden;
         }
 
-        .accent {
-            color: #00ff41;
+        /* Modern Gradients */
+        .text-gradient {
+            background: linear-gradient(135deg, #4ade80 0%, #3b82f6 50%, #a855f7 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
         }
 
-        .danger {
-            color: #ff0055;
+        .bg-gradient-premium {
+            background: linear-gradient(180deg, rgba(3, 7, 18, 0) 0%, rgba(31, 41, 55, 0.4) 100%);
         }
 
-        .terminal {
-            background: #000;
-            border: 1px solid #333;
-            padding: 20px;
-            border-radius: 8px;
-            font-family: monospace;
+        /* Glassmorphism Cards */
+        .glass-card {
+            background: rgba(17, 24, 39, 0.7);
+            -webkit-backdrop-filter: blur(20px);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
         }
 
-        .blink {
-            animation: blinker 1s linear infinite;
+        .glass-card:hover {
+            border-color: rgba(74, 222, 128, 0.5);
+            transform: translateY(-5px);
+            transition: all 0.3s ease;
+            box-shadow: 0 20px 40px -10px rgba(74, 222, 128, 0.15);
         }
 
-        @keyframes blinker {
-            50% {
-                opacity: 0;
+        /* Hero Glow */
+        .hero-glow {
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, rgba(0, 0, 0, 0) 70%);
+            top: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .secondary-glow {
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(74, 222, 128, 0.1) 0%, rgba(0, 0, 0, 0) 70%);
+            bottom: 0px;
+            right: 0px;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* Button Styles */
+        .btn-primary {
+            background: linear-gradient(90deg, #22c55e 0%, #16a34a 100%);
+            box-shadow: 0 0 20px rgba(34, 197, 94, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 0 30px rgba(34, 197, 94, 0.6);
+            transform: scale(1.05);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Animations */
+        @keyframes float {
+            0% {
+                transform: translateY(0px);
             }
+
+            50% {
+                transform: translateY(-10px);
+            }
+
+            100% {
+                transform: translateY(0px);
+            }
+        }
+
+        .floating {
+            animation: float 6s ease-in-out infinite;
         }
     </style>
 </head>
 
-<body class="min-h-screen flex flex-col items-center justify-center p-4">
+<body class="antialiased">
 
-    <!-- HERO SECTION -->
-    <header class="max-w-4xl w-full text-center mb-12">
-        <h1 class="text-4xl md:text-6xl font-bold mb-4 tracking-tighter">TITAN <span class="accent">SHIELD</span></h1>
-        <p class="text-xl text-gray-400">Your Codebase is Leaking. We Fix It.</p>
-    </header>
+    <!-- Background Effects -->
+    <div class="hero-glow"></div>
+    <div class="secondary-glow"></div>
 
-    <!-- TERMINAL DEMO -->
-    <div class="max-w-4xl w-full terminal mb-12 shadow-2xl shadow-green-900/10">
-        <div class="flex items-center gap-2 mb-4 border-b border-gray-800 pb-2">
-            <div class="w-3 h-3 rounded-full bg-red-500"></div>
-            <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
-            <div class="w-3 h-3 rounded-full bg-green-500"></div>
-            <span class="text-xs text-gray-500 ml-2">sentinel_agent --scan</span>
+    <!-- Header -->
+    <nav class="w-full py-6 px-8 flex justify-between items-center max-w-7xl mx-auto">
+        <div class="text-2xl font-bold tracking-tight">TITAN <span class="text-green-400">SHIELD</span></div>
+        <div class="hidden md:flex gap-8 text-sm font-medium text-gray-400">
+            <a href="#" class="hover:text-white transition">Product</a>
+            <a href="#" class="hover:text-white transition">Enterprise</a>
+            <a href="#" class="hover:text-white transition">Security</a>
         </div>
-        <div class="text-sm">
-            <p class="text-gray-400">$ sentinel scan --target ./repo --history</p>
-            <p class="mt-2 text-blue-400">[SCANNING] Analyzing last 100 commits...</p>
-            <p class="text-blue-400">[SCANNING] Checking .env.examples...</p>
-            <p class="text-danger mt-2">🔴 CRITICAL ALERT: Supabase Service Key found (commit 4ea2)</p>
-            <p class="text-danger">🔴 CRITICAL ALERT: PayPal Secret found (src/config.js)</p>
-            <p class="mt-2 text-green-400">✅ SOLUTION: Rotating keys via API...</p>
-            <p class="text-green-400">✅ SOLUTION: Rewriting Git History (BFG)...</p>
-            <p class="text-green-400">✅ SOLUTION: Installing Pre-commit Hook...</p>
-            <p class="mt-4"><span class="accent">>> SECURE STATE RESTORED.</span> <span class="blink">_</span></p>
-        </div>
-    </div>
+        <a href="mailto:deals@aogrl.com"
+            class="btn-secondary px-6 py-2 rounded-full text-sm font-medium hover:text-white">Contact Sales</a>
+    </nav>
 
-    <!-- PRICING GRID -->
-    <div class="grid md:grid-cols-2 gap-8 max-w-4xl w-full mb-16">
-        <!-- TIER 1 -->
-        <div class="border border-gray-800 p-8 rounded-lg hover:border-green-500 transition-colors bg-gray-900/30">
-            <h2 class="text-2xl font-bold mb-2">FLASH AUDIT</h2>
-            <div class="text-4xl font-bold mb-4 accent">$99</div>
-            <ul class="space-y-2 mb-8 text-sm text-gray-400">
-                <li>✓ Full Repo Deep Scan</li>
-                <li>✓ Git History Cleaning Script</li>
-                <li>✓ Secret Rotation Guide</li>
-                <li>✓ "TITAN Secured" Badge</li>
-            </ul>
-            <a href="mailto:security@titan.one?subject=Flash Audit Request"
-                class="block w-full py-3 bg-gray-800 hover:bg-gray-700 text-center rounded text-white font-bold transition">GET
-                AUDIT</a>
+    <!-- Main Hero -->
+    <main class="max-w-7xl mx-auto px-4 pt-20 pb-32 flex flex-col items-center text-center relative z-10">
+        <div
+            class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-900/20 border border-blue-800/50 text-blue-400 text-xs font-semibold mb-8 tracking-wide uppercase">
+            <span class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
+            Operational Intelligence
         </div>
 
-        <!-- TIER 2 -->
-        <div class="border border-green-900 p-8 rounded-lg bg-green-900/10 relative overflow-hidden">
-            <div class="absolute top-0 right-0 bg-accent text-black text-xs font-bold px-2 py-1">POPULAR</div>
-            <h2 class="text-2xl font-bold mb-2">THE GOVERNOR</h2>
-            <div class="text-4xl font-bold mb-4 accent">$499<span class="text-sm text-gray-500">/mo</span></div>
-            <ul class="space-y-2 mb-8 text-sm text-gray-300">
-                <li>✓ Automated CI/CD Key Governor</li>
-                <li>✓ Instant Key Deactivation</li>
-                <li>✓ Weekly Executive Reports</li>
-                <li>✓ 24/7 Sentinel Monitoring</li>
-            </ul>
-            <a href="mailto:sales@titan.one?subject=Governor License"
-                class="block w-full py-3 bg-accent hover:bg-green-400 text-black text-center rounded font-bold transition">DEPLOY
-                GOVERNOR</a>
-        </div>
-    </div>
+        <h1 class="text-6xl md:text-8xl font-bold tracking-tight mb-8 leading-tight">
+            Stop Leaking <br />
+            <span class="text-gradient">Your Future.</span>
+        </h1>
 
-    <!-- SOCIAL PROOF -->
-    <div class="text-center text-gray-500 text-sm max-w-2xl">
-        <p>"TITAN Shield fixed a critical breach in our trading engine in 4 hours. It's not a tool, it's a digital
-            immune system."</p>
-        <p class="mt-2 text-gray-400 font-bold">- OMEGA, Abyssal Architect</p>
-    </div>
+        <p class="text-xl md:text-2xl text-gray-400 max-w-3xl leading-relaxed mb-12 font-light">
+            Automated governance for high-velocity engineering teams.
+            TITAN Shield scans, sterilizes, and secures your codebase without slowing you down.
+        </p>
+
+        <div class="flex flex-col md:flex-row gap-6 w-full justify-center">
+            <a href="#audit" class="btn-primary px-8 py-4 rounded-xl text-white font-bold text-lg">Start Free Scan</a>
+            <a href="#demo"
+                class="btn-secondary px-8 py-4 rounded-xl text-white font-medium text-lg flex items-center justify-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z">
+                    </path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                Watch Demo
+            </a>
+        </div>
+
+        <!-- Dashboard Auto-Play UI Mock -->
+        <div
+            class="mt-20 w-full max-w-5xl glass-card rounded-2xl overflow-hidden shadow-2xl border-t border-white/10 floating">
+            <div class="bg-gray-900/50 px-4 py-3 border-b border-white/5 flex items-center gap-2">
+                <div class="flex gap-2">
+                    <div class="w-3 h-3 rounded-full bg-red-500/80"></div>
+                    <div class="w-3 h-3 rounded-full bg-yellow-500/80"></div>
+                    <div class="w-3 h-3 rounded-full bg-green-500/80"></div>
+                </div>
+                <div class="mx-auto text-xs font-mono text-gray-500">titan_sentinel_dashboard.exe</div>
+            </div>
+            <div class="p-8 grid grid-cols-3 gap-6 text-left h-80 bg-gradient-premium">
+                <div class="col-span-2 space-y-4">
+                    <div class="h-4 w-1/3 bg-gray-700/50 rounded animate-pulse"></div>
+                    <div
+                        class="h-32 w-full bg-gray-800/50 rounded-lg border border-red-500/30 p-4 relative overflow-hidden">
+                        <div class="absolute inset-0 bg-red-500/5"></div>
+                        <div class="flex items-center gap-3 text-red-400 font-mono text-sm mb-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z">
+                                </path>
+                            </svg>
+                            CRITICAL: AWS_SECRET_KEY Leaked
+                        </div>
+                        <div class="text-gray-500 text-xs font-mono">
+                            File: src/config/aws.js <br>
+                            Commit: 4f2a1 (2 hours ago) <br>
+                            Status: <span class="text-white">Active Exposure</span>
+                        </div>
+                        <button
+                            class="mt-4 px-3 py-1 bg-red-500/20 text-red-400 text-xs rounded border border-red-500/30 hover:bg-red-500/30">Revoke
+                            & Rotate</button>
+                    </div>
+                    <div class="h-24 w-full bg-gray-800/30 rounded-lg border border-green-500/20 p-4">
+                        <div class="flex items-center gap-3 text-green-400 font-mono text-sm mb-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            Secure: Stripe API Keys
+                        </div>
+                        <div class="text-gray-500 text-xs font-mono">
+                            Rotated via Vault. No exposure detected.
+                        </div>
+                    </div>
+                </div>
+                <div class="space-y-4">
+                    <div
+                        class="h-24 w-full bg-blue-500/10 rounded-lg border border-blue-500/20 p-4 flex flex-col justify-center items-center">
+                        <div class="text-4xl font-bold text-blue-400">98%</div>
+                        <div class="text-xs text-blue-300 uppercase tracking-wider mt-1">Health Score</div>
+                    </div>
+                    <div class="h-40 w-full bg-gray-800/30 rounded-lg p-4">
+                        <div class="flex justify-between items-end h-full gap-2">
+                            <div class="w-full bg-gray-700/50 rounded-t h-1/3 hover:bg-green-500/50 transition"></div>
+                            <div class="w-full bg-gray-700/50 rounded-t h-2/3 hover:bg-green-500/50 transition"></div>
+                            <div class="w-full bg-gray-700/50 rounded-t h-1/2 hover:bg-green-500/50 transition"></div>
+                            <div class="w-full bg-green-500 shadow-[0_0_15px_rgba(34,197,94,0.5)] rounded-t h-full">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Pricing / Action (Moved to Top) -->
+    <section id="audit" class="max-w-5xl mx-auto px-4 py-8 -mt-20 relative z-20">
+        <div
+            class="bg-gradient-to-r from-gray-900 to-gray-800 border border-gray-700 rounded-3xl p-12 relative overflow-hidden shadow-2xl">
+            <!-- decorative circles -->
+            <div
+                class="absolute top-0 right-0 w-64 h-64 bg-green-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3">
+            </div>
+
+            <div class="flex flex-col md:flex-row items-center justify-between gap-12 relative z-10">
+                <div class="max-w-lg">
+                    <h2 class="text-4xl font-bold mb-6">Secure Your Repo Now.</h2>
+                    <ul class="space-y-4 text-gray-300 mb-8">
+                        <li class="flex items-center gap-3">
+                            <span
+                                class="w-5 h-5 rounded-full bg-green-500/20 flex items-center justify-center text-green-400 font-bold text-xs">✓</span>
+                            Instant Flash Audit (FREE)
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <span
+                                class="w-5 h-5 rounded-full bg-green-500/20 flex items-center justify-center text-green-400 font-bold text-xs">✓</span>
+                            Full Git History Sterilization ($9.99)
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <span
+                                class="w-5 h-5 rounded-full bg-green-500/20 flex items-center justify-center text-green-400 font-bold text-xs">✓</span>
+                            Certificate of Sanitization
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="glass-card p-8 rounded-2xl w-full max-w-sm border border-green-500/30">
+                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Repository
+                        URL</label>
+                    <input type="text" placeholder="https://github.com/org/repo..."
+                        class="w-full bg-black/50 border border-gray-700 rounded-lg px-4 py-3 text-white mb-4 focus:outline-none focus:border-green-500 transition">
+
+                    <!-- Free Audit -> Leads to Contact/Mock -->
+                    <button
+                        class="w-full btn-primary py-4 rounded-lg text-white font-bold mb-3 shadow-lg shadow-green-500/20">
+                        Launch Flash Audit
+                    </button>
+                    <p class="text-center text-xs text-gray-600">Secure. Air-gapped. Private.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Grid -->
+    <section class="max-w-7xl mx-auto px-4 py-24 border-t border-gray-800">
+        <div class="text-center mb-16">
+            <h2 class="text-3xl font-bold mb-4">The Governance Engine</h2>
+            <p class="text-gray-400">Security that runs at the speed of your development.</p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-8">
+            <div class="glass-card p-8 rounded-2xl">
+                <div
+                    class="w-12 h-12 bg-blue-500/20 rounded-lg flex items-center justify-center text-blue-400 mb-6 text-2xl">
+                    🔍
+                </div>
+                <h3 class="text-xl font-bold mb-3">Deep Entropy Scan</h3>
+                <p class="text-gray-400 text-sm leading-relaxed">
+                    Our sentinel AI analyzes every commit, branch, and config file in an isolated sandbox. It detects
+                    high-entropy strings that regex misses.
+                </p>
+            </div>
+
+            <div class="glass-card p-8 rounded-2xl">
+                <div
+                    class="w-12 h-12 bg-purple-500/20 rounded-lg flex items-center justify-center text-purple-400 mb-6 text-2xl">
+                    🧹
+                </div>
+                <h3 class="text-xl font-bold mb-3">Hypersonic Sterilization</h3>
+                <p class="text-gray-400 text-sm leading-relaxed">
+                    We don't just alert; we fix. Automated BFG scripts scrub leaked keys from your git history instantly
+                    ensuring they are unrecoverable.
+                </p>
+            </div>
+
+            <div class="glass-card p-8 rounded-2xl">
+                <div
+                    class="w-12 h-12 bg-green-500/20 rounded-lg flex items-center justify-center text-green-400 mb-6 text-2xl">
+                    🛡️
+                </div>
+                <h3 class="text-xl font-bold mb-3">Zero-Trust Governor</h3>
+                <p class="text-gray-400 text-sm leading-relaxed">
+                    Install our pre-commit hooks and CI/CD blockers. Prevent leaks before they leave the developer's
+                    local machine.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Prevention & Subscription Choice -->
+    <section class="max-w-7xl mx-auto px-4 py-16">
+        <div class="text-center mb-12">
+            <h3 class="text-3xl font-bold text-white mb-4">Choose Your Defense Level</h3>
+            <p class="text-gray-400">Decide how much control you want to delegate.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+            <!-- DIY Option -->
+            <div
+                class="glass-card p-8 rounded-2xl border border-gray-700 relative group hover:border-blue-500/50 transition">
+                <h4 class="text-2xl font-bold text-white mb-2">The Alarm (DIY)</h4>
+                <div class="text-blue-400 font-bold mb-6 text-sm">YOU HOLD THE KEYS</div>
+                <p class="text-gray-400 text-sm mb-6 h-12">TITAN detects the leak and alerts you. You manually login to
+                    rotate keys.</p>
+                <div class="bg-blue-900/20 rounded p-4 mb-6 border border-blue-800/50">
+                    <div class="text-xs text-blue-300 font-mono">Alert Speed: <span class="text-white">Instant</span>
+                    </div>
+                    <div class="text-xs text-blue-300 font-mono">Fix Speed: <span class="text-white">Human
+                            Dependent</span></div>
+                </div>
+                <a href="#"
+                    class="block w-full py-3 text-center rounded-lg border border-gray-600 hover:bg-gray-800 transition text-white">View
+                    Step-by-Step Guides</a>
+            </div>
+
+            <!-- Governor Option -->
+            <div
+                class="glass-card p-8 rounded-2xl border border-green-500/50 relative group hover:border-green-400 transition">
+                <div
+                    class="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-green-500 text-black text-xs font-bold px-3 py-1 rounded-full">
+                    POPULAR</div>
+                <h4 class="text-2xl font-bold text-white mb-2">The Governor</h4>
+                <div class="text-green-400 font-bold mb-6 text-sm">TITAN HOLDS THE KEYS</div>
+                <p class="text-gray-400 text-sm mb-6 h-12">TITAN detects and rotates keys automatically in milliseconds.
+                    Zero downtime.</p>
+                <div class="bg-green-900/20 rounded p-4 mb-6 border border-green-800/50">
+                    <div class="text-xs text-green-300 font-mono">Alert Speed: <span
+                            class="text-white">Pre-Cognitive</span></div>
+                    <div class="text-xs text-green-300 font-mono">Fix Speed: <span class="text-white">
+                            < 100ms</span>
+                    </div>
+                </div>
+                <a href="https://paypal.me/omranahmad/29.99USD" target="_blank" rel="noopener noreferrer"
+                    class="block w-full btn-primary py-3 rounded-lg text-white font-bold shadow-lg shadow-green-500/20 text-center flex items-center justify-center">Subscribe
+                    ($29.99/mo)</a>
+                <div class="mt-3 text-center">
+                    <a href="https://paypal.me/omranahmad/9.99USD" target="_blank" rel="noopener noreferrer"
+                        class="text-xs text-gray-500 hover:text-green-400 transition underline decoration-gray-700">Or
+                        Buy One-Time Fix ($9.99)</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+
+    <footer class="border-t border-gray-800 py-12 text-center text-gray-600 text-sm">
+        <p>&copy; 2026 TITAN Industries. All systems operational.</p>
+    </footer>
 
 </body>
 
